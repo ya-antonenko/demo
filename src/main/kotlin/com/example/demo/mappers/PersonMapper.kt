@@ -5,7 +5,7 @@ import com.example.demo.entities.PersonEntity
 import org.springframework.stereotype.Component
 
 @Component
-class PersonMapper {
+class PersonMapper(private val childMapper: ChildMapper) {
 
     fun mapPersonEntitiesToPersons(personEntities: List<PersonEntity>): List<Person> {
         return personEntities.map { mapPersonEntityToPerson(it) }
@@ -13,11 +13,13 @@ class PersonMapper {
     }
 
     fun mapPersonEntityToPerson(personEntity: PersonEntity): Person {
-        return Person(
+        val person = Person(
             firstName = personEntity.firstName,
             lastName = personEntity.lastName,
             age = personEntity.age,
             sex = personEntity.sex
         )
+        person.setChild { childMapper.mapChildEntitiesToChildDTOs(personEntity.child) }
+        return person
     }
 }
